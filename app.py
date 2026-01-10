@@ -6,19 +6,20 @@ import tempfile
 import uuid
 
 app = Flask(__name__)
-CORS(app)  # ✅ Enable CORS
+CORS(app)
 
 UPLOAD_DIR = "uploads"
 OUTPUT_DIR = "output"
-HARD_LIMIT_KB = 800  # 🔒 GLOBAL HARD LIMIT
+HARD_LIMIT_KB = 800  # max allowed target size
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
+
 @app.route("/")
 def home():
-    return render_template("index.html")
-#                                  👆 add this
+    return "Image Compression Backend Running ✅"
+
 
 def compress_tight_range(
     input_path,
@@ -83,20 +84,19 @@ def compress():
             return jsonify({"error": "image missing"}), 400
 
         file = request.files["image"]
-        user_target = int(request.form.get("target_kb", 100))
-        target_kb = min(user_target, HARD_LIMIT_KB)
+        target_kb = int(request.form.get("target_kb", 100))
+        target_kb = min(target_kb, HARD_LIMIT_KB)
 
         uid = uuid.uuid4().hex
         input_path = os.path.join(UPLOAD_DIR, f"{uid}_{file.filename}")
-       output_path = os.path.join(OUTPUT_DIR, f"{uid}_compressed.jpg")
+        output_path = os.path.join(OUTPUT_DIR, f"{uid}_compressed.jpg")
 
         file.save(input_path)
 
         ok, size = compress_tight_range(
             input_path=input_path,
             output_path=output_path,
-            target_kb=target_kb,
-           output_format="jpg"
+            target_kb=target_kb
         )
 
         if not ok:
@@ -105,7 +105,7 @@ def compress():
         response = send_file(
             output_path,
             as_attachment=True,
-            download_name=f"compressed_{size//1024}KB.jpg"
+            download_name=f"compressed_{size // 1024}KB.jpg"
         )
 
         @response.call_on_close
@@ -119,63 +119,8 @@ def compress():
     except Exception as e:
         print("COMPRESS ERROR:", e)
         return jsonify({"error": str(e)}), 500
-
-
-        response = send_file(
-            output_path,
-            as_attachment=True,
-           download_name=f"compressed_{size//1024}KB.jpg"
-
-        )
-
-        @response.call_on_close
-        def cleanup():
-            for p in (input_path, output_path):
-                if os.path.exists(p):
-                    os.remove(p)
-
-        return response
-
-    except Exception as e:
-        print("COMPRESS ERROR:", e)
-        return jsonify({"error": str(e)}), 500
-
-        response = send_file(
-            output_path,
-            as_attachment=True,
-         download_name=f"compressed_{size//1024}KB.jpg"
-
-        )
-
-        @response.call_on_close
-        def cleanup():
-            for p in (input_path, output_path):
-                if os.path.exists(p):
-                    os.remove(p)
-
-        return response
-
-    except Exception as e:
-        print("ERROR:", e)
-        return jsonify({"error": str(e)}), 500
-
-    response = send_file(
-        output_path,
-        as_attachment=True,
-        download_name=f"compressed_{size//1024}KB.jpg"
-    )
-
-    # 🧹 Auto cleanup after response
-    @response.call_on_close
-    def cleanup():
-        for path in (input_path, output_path):
-            if os.path.exists(path):
-                os.remove(path)
-
-    return response
 
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=port, debug=True)
