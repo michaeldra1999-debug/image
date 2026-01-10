@@ -8,10 +8,6 @@ import uuid
 app = Flask(__name__)
 CORS(app)  # ✅ Enable CORS
 
-@app.route("/")
-def home():
-    return render_template("index.html")
-
 UPLOAD_DIR = "uploads"
 OUTPUT_DIR = "output"
 HARD_LIMIT_KB = 800  # 🔒 GLOBAL HARD LIMIT
@@ -19,7 +15,9 @@ HARD_LIMIT_KB = 800  # 🔒 GLOBAL HARD LIMIT
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
 
-
+@app.route("/")
+def home():
+    return render_template("index.html")
 #                                  👆 add this
 
 def compress_tight_range(
