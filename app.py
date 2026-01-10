@@ -19,9 +19,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 #                                  👆 add this
 @app.route("/")
 def home():
-    return render_template("index.html")
-
-
+    return "libvips Image Compressor API running"
 
 def compress_tight_range(
     input_path,
