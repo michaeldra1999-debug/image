@@ -81,30 +81,47 @@ def compress_tight_range(
 
 @app.route("/compress", methods=["POST"])
 def compress():
-    if "image" not in request.files:
-        return jsonify({"error": "image missing"}), 400
+   try:
+        if "image" not in request.files:
+            return jsonify({"error": "image missing"}), 400
 
-    file = request.files["image"]
-    user_target = int(request.form.get("target_kb", 100))
-    target_kb = min(user_target, HARD_LIMIT_KB)
+        file = request.files["image"]
+        user_target = int(request.form.get("target_kb", 100))
+        target_kb = min(user_target, HARD_LIMIT_KB)
 
-    # ✅ Unique filenames
-    uid = uuid.uuid4().hex
-    input_path = os.path.join(UPLOAD_DIR, f"{uid}_{file.filename}")
-    output_path = os.path.join(OUTPUT_DIR, f"{uid}_compressed.webp")
+        uid = uuid.uuid4().hex
+        input_path = os.path.join(UPLOAD_DIR, f"{uid}_{file.filename}")
+        output_path = os.path.join(OUTPUT_DIR, f"{uid}_compressed.webp")
 
-    file.save(input_path)
+        file.save(input_path)
 
-    ok, size = compress_tight_range(
-        input_path=input_path,
-        output_path=output_path,
-        target_kb=target_kb,
-        output_format="webp"  # ✅ Better compression
-    )
+        ok, size = compress_tight_range(
+            input_path=input_path,
+            output_path=output_path,
+            target_kb=target_kb,
+            output_format="webp"
+        )
 
-    if not ok:
-        os.remove(input_path)
-        return jsonify({"error": "compression failed"}), 500
+        if not ok:
+            return jsonify({"error": "compression failed"}), 500
+
+        response = send_file(
+            output_path,
+            as_attachment=True,
+            download_name=f"compressed_{size//1024}KB.webp"
+        )
+
+        @response.call_on_close
+        def cleanup():
+            for p in (input_path, output_path):
+                if os.path.exists(p):
+                    os.remove(p)
+
+        return response
+
+    except Exception as e:
+        print("ERROR:", e)
+        return jsonify({"error": str(e)}), 500
 
     response = send_file(
         output_path,
