@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, jsonify, render_template
+from flask import Flask, request, send_file, jsonify
 from flask_cors import CORS
 import pyvips
 import os
@@ -10,7 +10,9 @@ CORS(app)
 
 UPLOAD_DIR = "uploads"
 OUTPUT_DIR = "output"
-HARD_LIMIT_KB = 800  # max allowed target size
+
+HARD_LIMIT_KB = 800
+MIN_TARGET_KB = 30
 
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 os.makedirs(OUTPUT_DIR, exist_ok=True)
@@ -26,7 +28,7 @@ def compress_tight_range(
     output_path,
     target_kb,
     tolerance_kb=2,
-    q_min=60,
+    q_min=40,
     q_max=95,
     max_width=2000
 ):
@@ -36,18 +38,17 @@ def compress_tight_range(
         image = image.resize(max_width / image.width)
 
     max_bytes = target_kb * 1024
-    min_bytes = (target_kb - tolerance_kb) * 1024
+    min_bytes = max((target_kb - tolerance_kb) * 1024, 1)
 
     best_under = None
     best_under_size = 0
 
     for q in range(q_max, q_min - 1, -1):
         tmp = tempfile.NamedTemporaryFile(
-    delete=False,
-    suffix=".jpg",
-    dir=OUTPUT_DIR   # 👈 VERY IMPORTANT
-)
-
+            delete=False,
+            suffix=".jpg",
+            dir=OUTPUT_DIR
+        )
         tmp.close()
 
         image.jpegsave(
@@ -89,8 +90,12 @@ def compress():
             return jsonify({"error": "image missing"}), 400
 
         file = request.files["image"]
+
+        if not file.filename.lower().endswith((".jpg", ".jpeg")):
+            return jsonify({"error": "Only JPG/JPEG supported"}), 400
+
         target_kb = int(request.form.get("target_kb", 100))
-        target_kb = min(target_kb, HARD_LIMIT_KB)
+        target_kb = min(max(target_kb, MIN_TARGET_KB), HARD_LIMIT_KB)
 
         uid = uuid.uuid4().hex
         input_path = os.path.join(UPLOAD_DIR, f"{uid}_{file.filename}")
@@ -104,7 +109,7 @@ def compress():
             target_kb=target_kb
         )
 
-        if not ok:
+        if not ok or not os.path.exists(output_path):
             return jsonify({"error": "compression failed"}), 500
 
         response = send_file(
@@ -127,5 +132,5 @@ def compress():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
