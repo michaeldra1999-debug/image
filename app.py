@@ -81,7 +81,7 @@ def compress_tight_range(
 
 @app.route("/compress", methods=["POST"])
 def compress():
-   try:
+    try:
         if "image" not in request.files:
             return jsonify({"error": "image missing"}), 400
 
@@ -104,6 +104,24 @@ def compress():
 
         if not ok:
             return jsonify({"error": "compression failed"}), 500
+
+        response = send_file(
+            output_path,
+            as_attachment=True,
+            download_name=f"compressed_{size//1024}KB.webp"
+        )
+
+        @response.call_on_close
+        def cleanup():
+            for p in (input_path, output_path):
+                if os.path.exists(p):
+                    os.remove(p)
+
+        return response
+
+    except Exception as e:
+        print("COMPRESS ERROR:", e)
+        return jsonify({"error": str(e)}), 500
 
         response = send_file(
             output_path,
