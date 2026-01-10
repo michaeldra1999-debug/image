@@ -1,0 +1,218 @@
+/* =========================
+   GLOBAL RESET
+========================= */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* =========================
+   BODY
+========================= */
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6fa;
+  color: #333;
+  min-height: 100vh;
+}
+
+/* =========================
+   CONTAINER
+========================= */
+.container {
+  max-width: 440px;
+  width: 100%;
+  margin: 24px auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* =========================
+   HEADINGS
+========================= */
+h1 {
+  font-size: 22px;
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 14px;
+}
+
+/* =========================
+   DRAG & DROP AREA
+========================= */
+.drop {
+  border: 2px dashed #ff0000;
+  border-radius: 10px;
+  min-height: 240px;
+  margin: 16px 0;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.drop.active {
+  background: #fff5f5;
+  border-color: #cc0000;
+}
+
+.drop.has-image {
+  border-style: solid;
+}
+
+/* Upload text */
+#uploadText {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #555;
+  padding: 12px;
+}
+
+/* Preview image */
+.preview {
+  max-width: 100%;
+  max-height: 220px;
+  border-radius: 8px;
+  display: none;
+}
+
+/* Hide text when image present */
+.drop.has-image #uploadText {
+  display: none;
+}
+
+/* =========================
+   BUTTON ROW
+========================= */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+
+.size-btn {
+  background: #ff0000;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  cursor: pointer;
+  min-width: 80px;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.size-btn:hover {
+  background: #d90000;
+}
+
+.size-btn:active {
+  transform: scale(0.96);
+}
+
+/* =========================
+   CUSTOM SIZE SECTION
+========================= */
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+}
+
+.highlight-box {
+  border: 2px dashed #ff0000;
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 10px;
+}
+
+.kb-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.kb-input {
+  width: 70px;
+  height: 36px;
+  font-size: 15px;
+  text-align: center;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.kb-input:focus {
+  outline: none;
+  border-color: #ff0000;
+}
+
+.kb-badge {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.compress-btn {
+  background: #ff0000;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.compress-btn:hover {
+  background: #d90000;
+}
+
+.compress-btn:active {
+  transform: scale(0.96);
+}
+
+/* =========================
+   NOTE
+========================= */
+.note {
+  font-size: 12px;
+  color: #777;
+  margin-top: 12px;
+  line-height: 1.4;
+}
+
+/* =========================
+   SMALL DEVICES
+========================= */
+@media (max-width: 360px) {
+  .container {
+    padding: 16px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  .size-btn {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .kb-input {
+    width: 60px;
+  }
+}
