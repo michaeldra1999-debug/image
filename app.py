@@ -27,12 +27,10 @@ def compress_tight_range(
     tolerance_kb=2,
     q_min=60,
     q_max=95,
-    max_width=2000,
-    output_format="jpg"  # jpg / webp
+    max_width=2000
 ):
     image = pyvips.Image.new_from_file(input_path, access="sequential")
 
-    # 🔹 Resize large images
     if image.width > max_width:
         image = image.resize(max_width / image.width)
 
@@ -43,13 +41,15 @@ def compress_tight_range(
     best_under_size = 0
 
     for q in range(q_max, q_min - 1, -1):
-        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=f".{output_format}")
+        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
         tmp.close()
 
-        if output_format == "webp":
-            image.webpsave(tmp.name, Q=q, strip=True)
-        else:
-            image.jpegsave(tmp.name, Q=q, optimize_coding=True, strip=True)
+        image.jpegsave(
+            tmp.name,
+            Q=q,
+            optimize_coding=True,
+            strip=True
+        )
 
         size = os.path.getsize(tmp.name)
 
@@ -74,6 +74,7 @@ def compress_tight_range(
         return True, best_under_size
 
     return False, None
+
 
 @app.route("/compress", methods=["POST"])
 def compress():
