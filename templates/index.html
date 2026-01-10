@@ -1,71 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-
-  <!-- ✅ Mobile Friendly -->
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Image Compressor Online</title>
-
-  <!-- ✅ CSS -->
-  <link rel="stylesheet" href="/static/css/style.css">
+  <meta charset="UTF-8" />
+  <title>Image Compression Backend</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .card {
+      background: #020617;
+      padding: 40px 60px;
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+    h1 {
+      color: #22c55e;
+      margin-bottom: 10px;
+    }
+    p {
+      opacity: 0.8;
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="container">
-
-  <h1>Image Compressor Online</h1>
-  <p class="subtitle">No Login • Choose Size • Download Instantly</p>
-
-  <!-- Drag & Drop Area -->
-  <div class="drop" id="dropArea">
-    <span id="uploadText">
-      Drag & Drop Image Here<br>
-      or Tap to Upload
-    </span>
-
-    <input type="file" id="imageFile" accept="image/*" hidden>
-    <img id="preview" class="preview" alt="Preview">
+  <div class="card">
+    <h1>Image Compression Backend Running ✅</h1>
+    <p>Flask + Docker + Render</p>
+    <p>POST <code>/compress</code></p>
   </div>
-
-  <!-- Preset Buttons -->
-  <div class="btn-row">
-    <button class="size-btn" onclick="autoCompress(100)">100 KB</button>
-    <button class="size-btn" onclick="autoCompress(200)">200 KB</button>
-    <button class="size-btn" onclick="autoCompress(300)">300 KB</button>
-    <button class="size-btn" onclick="autoCompress(400)">400 KB</button>
-  </div>
-
-  <!-- Custom Size -->
-  <p class="section-title">Custom Size</p>
-
-  <div class="highlight-box">
-    <div class="kb-row">
-      <input
-        type="number"
-        id="customSize"
-        class="kb-input"
-        value="100"
-        min="10"
-        max="800"
-      >
-      <span class="kb-badge">KB</span>
-      <button class="compress-btn" onclick="customCompress()">Compress</button>
-    </div>
-  </div>
-
-  <!-- Note -->
-  <p class="note">
-    Allowed size: 10KB – 800KB<br>
-    Files are processed securely and deleted automatically
-  </p>
-
-</div>
-
-<!-- ✅ JS -->
-<script src="/static/js/app.js"></script>
-
 </body>
 </html>
