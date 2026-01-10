@@ -42,7 +42,12 @@ def compress_tight_range(
     best_under_size = 0
 
     for q in range(q_max, q_min - 1, -1):
-        tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
+        tmp = tempfile.NamedTemporaryFile(
+    delete=False,
+    suffix=".jpg",
+    dir=OUTPUT_DIR   # 👈 VERY IMPORTANT
+)
+
         tmp.close()
 
         image.jpegsave(
