@@ -88,7 +88,7 @@ def compress():
 
         uid = uuid.uuid4().hex
         input_path = os.path.join(UPLOAD_DIR, f"{uid}_{file.filename}")
-        output_path = os.path.join(OUTPUT_DIR, f"{uid}_compressed.webp")
+       output_path = os.path.join(OUTPUT_DIR, f"{uid}_compressed.jpg")
 
         file.save(input_path)
 
@@ -96,7 +96,7 @@ def compress():
             input_path=input_path,
             output_path=output_path,
             target_kb=target_kb,
-            output_format="webp"
+           output_format="jpg"
         )
 
         if not ok:
@@ -105,7 +105,7 @@ def compress():
         response = send_file(
             output_path,
             as_attachment=True,
-            download_name=f"compressed_{size//1024}KB.webp"
+            download_name=f"compressed_{size//1024}KB.jpg"
         )
 
         @response.call_on_close
@@ -124,7 +124,8 @@ def compress():
         response = send_file(
             output_path,
             as_attachment=True,
-            download_name=f"compressed_{size//1024}KB.webp"
+           download_name=f"compressed_{size//1024}KB.jpg"
+
         )
 
         @response.call_on_close
@@ -142,7 +143,8 @@ def compress():
         response = send_file(
             output_path,
             as_attachment=True,
-            download_name=f"compressed_{size//1024}KB.webp"
+         download_name=f"compressed_{size//1024}KB.jpg"
+
         )
 
         @response.call_on_close
@@ -160,7 +162,7 @@ def compress():
     response = send_file(
         output_path,
         as_attachment=True,
-        download_name=f"compressed_{size//1024}KB.webp"
+        download_name=f"compressed_{size//1024}KB.jpg"
     )
 
     # 🧹 Auto cleanup after response
