@@ -1,4 +1,5 @@
 from flask import Flask, request, send_file, jsonify
+from flask import render_template
 from flask_cors import CORS
 import pyvips
 import os
@@ -20,7 +21,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 
 @app.route("/")
 def home():
-    return "Image Compression Backend Running ✅"
+    return render_template("index.html")
 
 
 def compress_tight_range(
