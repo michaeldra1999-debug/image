@@ -1,11 +1,17 @@
-services:
-  - type: web
-    name: image-compressor
-    env: python
-    plan: free
-    buildCommand: |
-      apt-get update
-      apt-get install -y libvips libvips-dev
-      pip install -r requirements.txt
-"gunicorn", "app:app", "--timeout", "120"
+# ✅ Working Dockerfile for Flask + PyVips on Render
 
+FROM python:3.10-slim
+
+# Install libvips (required for pyvips)
+RUN apt-get update && \
+    apt-get install -y libvips && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+COPY . /app
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+EXPOSE 10000
+
+CMD ["gunicorn", "app:app", "--timeout", "120"]
