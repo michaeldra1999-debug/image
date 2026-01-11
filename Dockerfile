@@ -1,11 +1,8 @@
-# ==========================
-# ✅ Working Dockerfile for Flask + pyvips on Render
-# ==========================
+# ✅ Working Dockerfile for Flask + PyVips on Render
 
-# Base image
 FROM python:3.10-slim
 
-# Install libvips (required for pyvips)
+# Install libvips (needed for pyvips)
 RUN apt-get update && \
     apt-get install -y libvips && \
     rm -rf /var/lib/apt/lists/*
@@ -13,14 +10,14 @@ RUN apt-get update && \
 # Set work directory
 WORKDIR /app
 
-# Copy all project files
+# Copy all files
 COPY . /app
 
-# Install dependencies
+# Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port
+# Expose Flask port
 EXPOSE 10000
 
-# Start the app with gunicorn (as Render expects)
+# Run app with gunicorn
 CMD ["gunicorn", "app:app"]
