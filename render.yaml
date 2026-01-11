@@ -2,7 +2,7 @@
 
 FROM python:3.10-slim
 
-# Install libvips with JPEG support
+# Install libvips with JPEG & PNG support
 RUN apt-get update && \
     apt-get install -y libvips libjpeg-dev libpng-dev && \
     rm -rf /var/lib/apt/lists/*
@@ -15,3 +15,15 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 10000
 
 CMD ["gunicorn", "app:app", "--timeout", "120"]
+
+# Source - https://stackoverflow.com/q
+# Posted by V.D., modified by community. See post 'Timeline' for change history
+# Retrieved 2026-01-11, License - CC BY-SA 4.0
+
+FROM python:3.8-slim-buster
+
+WORKDIR /app
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+COPY . .
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
