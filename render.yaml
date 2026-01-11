@@ -1,10 +1,10 @@
-# ✅ Working Dockerfile for Flask + PyVips on Render
+# ✅ Fixed Dockerfile for Flask + PyVips on Render
 
 FROM python:3.10-slim
 
-# Install libvips (required for pyvips)
+# Install libvips with JPEG support
 RUN apt-get update && \
-    apt-get install -y libvips && \
+    apt-get install -y libvips libjpeg-dev libpng-dev && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
