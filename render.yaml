@@ -7,4 +7,5 @@ services:
       apt-get update
       apt-get install -y libvips libvips-dev
       pip install -r requirements.txt
-    startCommand: gunicorn app:app
+"gunicorn", "app:app", "--timeout", "120"
+
